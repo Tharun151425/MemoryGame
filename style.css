@@ -443,3 +443,76 @@ footer {
 .display {
     margin: 0;
 }
+
+/* Style for the share button */
+.share-game {
+    display: flex;
+    align-items: center;
+}
+
+#share-btn {
+    background-color: #444;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+#share-btn i {
+    font-size: 18px;
+}
+
+#share-btn:hover {
+    background-color: #555;
+}
+
+.stat-item #difficulty-level {
+    font-size: 1rem;
+    color: #00b3b3; 
+    font-weight: bold;
+}
+
+.stat-item #difficulty-level i {
+    font-size: 1.5rem;
+}
+
+.controls label {
+    color: #fff;
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+.controls select {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+}
+
+.controls select option {
+    background-color: #333;
+    color: #fff;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #218838;
+}

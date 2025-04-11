@@ -18,6 +18,26 @@ const modalMessage = document.getElementById('modal-message');
 const modalExit = document.getElementById('modal-exit');
 const modalClose = document.getElementById('modal-close');
 const clearScoresBtn = document.getElementById('clear-scores');
+const difficultySelect = document.getElementById('difficulty');
+const difficultyLevelDisplay = document.getElementById('difficulty-level-display');
+const highDifficultyDisplay = document.getElementById('high-difficulty');
+let highestDifficulty = localStorage.getItem('highestDifficulty') || 'Explorer'; // Default to 'Explorer'
+
+function saveHighestDifficulty(difficulty) {
+    localStorage.setItem('highestDifficulty', difficulty);
+    highestDifficulty = difficulty;
+    highDifficultyDisplay.textContent = `Highest Difficulty: ${highestDifficulty}`; // Update UI
+}
+
+difficultySelect.addEventListener('change', function () {
+    const selectedDifficulty = difficultySelect.value;
+    
+    // Save and update highest difficulty if the selected one is higher
+    if (selectedDifficulty > highestDifficulty) {
+        saveHighestDifficulty(selectedDifficulty);
+    }
+});
+
 
 clearScoresBtn.addEventListener('click', ()=>
     {
@@ -51,6 +71,10 @@ function init() {
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
     
+    // Initialize Difficulty from localStorage
+    difficultySelect.value = localStorage.getItem('selectedDifficulty') || 'explorer';
+    difficultyLevelDisplay.textContent = `Difficulty: ${difficultySelect.value}`; // Display difficulty
+    
     updateScoreboardDisplay();
     
     generateCards();
@@ -63,6 +87,7 @@ function init() {
     
     exitBtn.disabled = true;
 }
+
 
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -125,6 +150,10 @@ function startGame() {
     startBtn.disabled = true;
     exitBtn.disabled = false;
     
+    // Save selected difficulty to localStorage when game starts
+    const selectedDifficulty = difficultySelect.value;
+    localStorage.setItem('selectedDifficulty', selectedDifficulty);
+
     generateCards();
     startGameTimer();
 }
@@ -133,19 +162,30 @@ function exitGame() {
     if (!isPlaying) return;
 
     clearInterval(gameInterval);
-    if (timeLeft < 60)
-    {if (currentScore > highestScore) {
-        highestScore = currentScore;
-        localStorage.setItem('highScore', highestScore);
-        highScore.textContent = `High Score: ${highestScore}`;
+    
+    const selectedDifficulty = difficultySelect.value;  // Get current difficulty
+    
+    if (timeLeft < 60) {
+        if (currentScore > highestScore) {
+            highestScore = currentScore;
+            localStorage.setItem('highScore', highestScore);
+            highScore.textContent = `High Score: ${highestScore}`;
+        }
+        
+        // Check if selected difficulty is higher than the saved one and update
+        if (selectedDifficulty > highestDifficulty) {
+            saveHighestDifficulty(selectedDifficulty);
+        }
+        
+        console.log(localStorage);
+        saveScore(currentScore, false);
+        
+        showModal('Game Exited', `Your score: ${currentScore}`);
+        
+        resetGameState();
     }
-    console.log(localStorage)
-    saveScore(currentScore, false);
-    
-    showModal('Game Exited', `Your score: ${currentScore}`);
-    
-    resetGameState();}
 }
+
 
 function startGameTimer() {
     timer.textContent = `Time: ${timeLeft}s`;

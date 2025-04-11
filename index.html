@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://tharun-memorymatch.vercel.app/">
     <meta property="og:title" content="Memory Match Game - Challenge Your Brain!">
     <meta property="og:description" content="Play this interactive color memory game and boost your focus and recall.">
-    <meta property="og:image" content="screenshots/game.png"> 
+    <meta property="og:image" content="screenshots/game.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -38,6 +38,11 @@
             <i class="fas fa-puzzle-piece"></i>
             <h2>Memory Match</h2>
         </div>
+        <div class="share-game">
+            <button id="share-btn" aria-label="Share Game">
+                <i class="fas fa-share-alt"></i> Share Game
+            </button>
+        </div>        
         <div class="theme-toggle">
             <button id="theme-switch" aria-label="Toggle dark mode">
                 <i class="fas fa-moon"></i>
@@ -60,17 +65,24 @@
                     <i class="fas fa-clock"></i>
                     <p id="timer" class="display">Time: 60s</p>
                 </div>
+                <div class="stat-item">
+                    <i class="fas fa-medal"></i>
+                    <p id="difficulty-level-display">Difficulty: Explorer</p>
+                </div>
             </div>
 
             <div id="gamecontainer" class="game-grid"></div>
 
             <div class="controls">
-                <button id="start" class="btn primary">
-                    <i class="fas fa-play"></i> Start Game
-                </button>
-                <button id="exit" class="btn secondary">
-                    <i class="fas fa-times"></i> Exit Game
-                </button>
+                <label for="difficulty">Select Difficulty:</label>
+                <select id="difficulty">
+                    <option value="explorer">Explorer</option>
+                    <option value="warrior">Warrior</option>
+                    <option value="hero">Hero</option>
+                    <option value="god">God</option>
+                </select>
+                <button id="startBtn">Start Game</button>
+                <button id="exitBtn" disabled>Exit Game</button>
             </div>
         </div>
 
@@ -117,6 +129,7 @@
         </div>
         <p class="footer-text">&copy; 2025 Memory Match Game</p>
     </footer>
+
     <script src="script.js"></script>
 </body>
 
