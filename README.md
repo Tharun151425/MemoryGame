@@ -2,6 +2,8 @@
 
 A responsive memory card matching game with light/dark theme support and score tracking. Test your memory by matching pairs of colored cards before time runs out!
 
+🎮 👉**[Click here to try the game!](https://tharun-memorymatch.vercel.app/)** 🧠✨
+
 ---
 
 ## Features
