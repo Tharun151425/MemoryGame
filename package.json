@@ -1,0 +1,10 @@
+{
+    "name": "memory-match-game",
+    "version": "1.0.0",
+    "description": "A memory match card game",
+    "scripts": {
+      "build": "echo 'No build step needed'"
+    },
+    "author": "Tharunkrishna M",
+    "license": "MIT"
+  }

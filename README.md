@@ -32,21 +32,16 @@ A responsive memory card matching game with light/dark theme support and score t
 ![Game Complete](screenshots/game-complete.png)
 ![Mobile View](screenshots/mobile-view.png)
 
-## How to Play
+---
 
-1. Click the "Start Game" button to begin
-2. Find matching pairs of colored cards by clicking on them
-3. Match all pairs before the timer runs out
-4. Your score is tracked and saved
-5. Try to beat your high score!
+## 🎯 How to Play
 
-## Technologies Used
+1. Click on **Start Game** to begin.
+2. Flip cards and find all matching pairs.
+3. Complete the game before the countdown ends.
+4. Your score is saved automatically — try to beat it!
 
-- HTML5
-- CSS3 (with CSS Variables for theming)
-- Vanilla JavaScript (ES6+)
-- LocalStorage API for data persistence
-- Font Awesome icons
+---
 
 ## Installation
 

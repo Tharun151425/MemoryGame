@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "public": true,
+    "builds": [
+      { "src": "MemoryGame.html", "use": "@vercel/static" },
+      { "src": ".*", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/", "dest": "/MemoryGame.html" },
+      { "src": "/(.*)", "dest": "/$1" }
+    ]
+  }
+  
