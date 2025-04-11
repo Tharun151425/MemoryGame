@@ -1,120 +1,329 @@
-const shuffle = (arr) => {
-    for (let i = 0; i <arr.length - 1; i++){
-        let j = Math.floor(Math.random() * (arr.length - 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
 const TIME = 60;
-const Timer = document.getElementById('timer');
-const Score = document.getElementById('score');
-const Start = document.getElementById('start');
-const GameContainer = document.getElementById('gamecontainer');
-const colors = ['red', 'blue', 'green', 'purple', 'orange', 'pink', 'red', 'blue', 'green', 'purple', 'orange', 'pink'];
-const High = document.getElementById('high');
-let cards = shuffle(colors.concat(colors));
-// console.log(colors, typeof colors);
-// console.log(cards, typeof cards);
-let score = 0;
+const COLORS = [
+    '#fd79a8', '#6c5ce7', '#00cec9', '#fdcb6e', '#e17055', '#00b894',
+    '#e84393', '#74b9ff', '#55efc4', '#fab1a0', '#0984e3', '#ff7675'
+];
+
+const timer = document.getElementById('timer');
+const score = document.getElementById('score');
+const highScore = document.getElementById('high');
+const startBtn = document.getElementById('start');
+const exitBtn = document.getElementById('exit');
+const gameContainer = document.getElementById('gamecontainer');
+const themeSwitch = document.getElementById('theme-switch');
+const scoreboardContainer = document.getElementById('scoreboard');
+const modal = document.getElementById('game-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalMessage = document.getElementById('modal-message');
+const modalExit = document.getElementById('modal-exit');
+const modalClose = document.getElementById('modal-close');
+const clearScoresBtn = document.getElementById('clear-scores');
+
+clearScoresBtn.addEventListener('click', ()=>
+    {
+        localStorage.removeItem('scores');
+        localStorage.removeItem('highScore');
+        previousScores = [];
+        highestScore = 0;
+        highScore.textContent = `High Score: 0`;
+        updateScoreboardDisplay();
+    }
+);
+
+modalExit.addEventListener('click', () => {
+    modal.style.display = 'none';
+    resetGameState();
+});
+
+let cards = [];
+let selectedCards = [];
+let currentScore = 0;
 let timeLeft = TIME;
 let gameInterval;
-let selected = [];
-let highscore = 0;
+let highestScore = localStorage.getItem('highScore') || 0;
+let isPlaying = false;
+let previousScores = JSON.parse(localStorage.getItem('scores')) || [];
 
-function startGameTimer(timeLeft){
-    Timer.textContent = `Time Left : ${timeLeft}`;
-    gameInterval = setInterval(
-        ()=> {
-            timeLeft--;
-            Timer.textContent = `Time Left : ${timeLeft}`;
-            if (timeLeft == 0){
-                clearInterval(gameInterval);
-                timeLeft = TIME;
-                if (score > highscore){
-                    highscore = score;
-                    High.textContent= `Highest Score : ${highscore}`;
-                }
-                alert(`Game Over! Your Score ${score}`);
-                generateCards();
-                Timer.textContent = `Time Left : ${timeLeft}`;
-                Start.disabled = false;
-        }
-    },1000)
-}
-
-
-function generateCards(){
-    GameContainer.innerHTML = '';
-    let c = 0;
-    for (const color of cards){
-        let newCard = document.createElement('div');
-        newCard.classList.add('card');
-        newCard.dataset.color = color;
-        newCard.dataset.id = c++;
-        newCard.textContent = '?';
-        GameContainer.appendChild(newCard); 
-    }
-}
-function checkMatch(){
-    let [card1, card2] = selected;
-    if ((card1.dataset.color === card2.dataset.color) && (card1.dataset.id != card2.dataset.id)){
-        card1.classList.add('matched');
-        card2.classList.add('matched');
-        score += 2;
-        if (score === 24){
-            clearInterval(gameInterval);
-            timeLeft = TIME;
-            if (score > highscore){
-                highscore = score;
-                High.textContent= `Highest Score : ${highscore}`;
-            }
-            alert(`Congrats! You have completed🥳🥳🥳!!!! Your Score ${score}`);
-            generateCards();
-            Timer.textContent = `Time Left : ${timeLeft}`;
-            Start.disabled = false;
-        }
-        Score.textContent = `Score: ${score}`;
-    }
-    else {
-        card1.textContent = '?';
-        card2.textContent = '?';
-        card1.style.backgroundColor = '#ddd';
-        card2.style.backgroundColor = '#ddd';
-    }
-    selected = [];
-}
-function Exit(){
-    clearInterval(gameInterval);
-    timeLeft = TIME;
-    if (score > highscore){
-        highscore = score;
-        High.textContent= `Highest Score : ${highscore}`;
-    }
-    alert(`Better Luck Next Time! Your Score ${score}`);
+function init() {
+    highScore.textContent = `High Score: ${highestScore}`;
+    
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    
+    updateScoreboardDisplay();
+    
     generateCards();
-    Timer.textContent = `Time Left : ${timeLeft}`;
-    Start.disabled = false;
+
+    startBtn.addEventListener('click', startGame);
+    exitBtn.addEventListener('click', exitGame);
+    themeSwitch.addEventListener('click', toggleTheme);
+    gameContainer.addEventListener('click', handleCardClick);
+    modalClose.addEventListener('click', closeModal);
+    
+    exitBtn.disabled = true;
 }
 
-function CardClick(event){
-    const card = event.target;
-    if (!card.classList.contains('card') || card.classList.contains('matched'))
-        return;
-    card.textContent = card.dataset.color;
-    card.style.backgroundColor = card.dataset.color;
-    selected.push(card);
-    if (selected.length === 2){
-        setTimeout(checkMatch,500);
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = themeSwitch.querySelector('i');
+    
+    if (theme === 'dark') {
+        icon.className = 'fas fa-sun';
+        themeSwitch.setAttribute('aria-label', 'Toggle light mode');
+    } else {
+        icon.className = 'fas fa-moon';
+        themeSwitch.setAttribute('aria-label', 'Toggle dark mode');
     }
 }
+
+function shuffle(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function generateCards() {
+    gameContainer.innerHTML = '';
+    
+    const cardColors = shuffle([...COLORS, ...COLORS]);
+    cards = cardColors;
+    
+    for (let i = 0; i < cards.length; i++) {
+        const color = cards[i];
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.color = color;
+        card.dataset.index = i;
+        card.textContent = '?';
+        gameContainer.appendChild(card);
+    }
+}
+
 function startGame() {
+    if (isPlaying) return;
+    
+    isPlaying = true;
     timeLeft = TIME;
-    Start.disabled = true;
-    score = 0;
-    Score.textContent =`Score : ${score}`;
-    startGameTimer(timeLeft);
-    cards = shuffle(colors.concat(colors));
-    selected = [];
+    currentScore = 0;
+    selectedCards = [];
+    
+    score.textContent = `Score: ${currentScore}`;
+    timer.textContent = `Time: ${timeLeft}s`;
+    startBtn.disabled = true;
+    exitBtn.disabled = false;
+    
     generateCards();
-    GameContainer.addEventListener('click',CardClick);
+    startGameTimer();
 }
+
+function exitGame() {
+    if (!isPlaying) return;
+
+    clearInterval(gameInterval);
+    if (timeLeft < 60)
+    {if (currentScore > highestScore) {
+        highestScore = currentScore;
+        localStorage.setItem('highScore', highestScore);
+        highScore.textContent = `High Score: ${highestScore}`;
+    }
+    console.log(localStorage)
+    saveScore(currentScore, false);
+    
+    showModal('Game Exited', `Your score: ${currentScore}`);
+    
+    resetGameState();}
+}
+
+function startGameTimer() {
+    timer.textContent = `Time: ${timeLeft}s`;
+    
+    gameInterval = setInterval(() => {
+        timeLeft--;
+        timer.textContent = `Time: ${timeLeft}s`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(gameInterval);
+            
+            if (currentScore > highestScore) {
+                highestScore = currentScore;
+                localStorage.setItem('highScore', highestScore);
+                highScore.textContent = `High Score: ${highestScore}`;
+            }
+            
+            saveScore(currentScore, false);
+            showModal('Time\'s Up!', `Your score: ${currentScore}`);
+            resetGameState();
+        }
+    }, 1000);
+}
+
+function resetGameState() {
+    isPlaying = false;
+    startBtn.disabled = false;
+    exitBtn.disabled = true;
+}
+
+function handleCardClick(event) {
+    if (!isPlaying) return;
+    
+    const card = event.target;
+    
+    if (!card.classList.contains('card')) return;
+    
+    if (card.classList.contains('matched') || selectedCards.includes(card)) return;
+    revealCard(card);
+    selectedCards.push(card);
+    
+    if (selectedCards.length === 2) {
+        checkForMatch();
+    }
+}
+
+function revealCard(card) {
+    card.style.backgroundColor = card.dataset.color;
+    card.textContent = '';
+}
+
+function checkForMatch() {
+    const [card1, card2] = selectedCards;
+    
+    isPlaying = false;
+    
+    setTimeout(() => {
+        if (card1.dataset.color === card2.dataset.color && card1.dataset.index !== card2.dataset.index) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            
+            currentScore += 2;
+            score.textContent = `Score: ${currentScore}`;
+            
+            const matchedCards = document.querySelectorAll('.matched');
+            if (matchedCards.length === cards.length) {
+                clearInterval(gameInterval);
+                
+                if (currentScore > highestScore) {
+                    highestScore = currentScore;
+                    localStorage.setItem('highScore', highestScore);
+                    highScore.textContent = `High Score: ${highestScore}`;
+                }
+                
+                saveScore(currentScore, true);
+                
+                showModal('Congratulations!', `You completed the game with a score of ${currentScore}!`);
+                
+                resetGameState();
+                return;
+            }
+        } else {
+            card1.style.backgroundColor = '';
+            card2.style.backgroundColor = '';
+            card1.textContent = '?';
+            card2.textContent = '?';
+        }
+        
+        selectedCards = [];
+        
+        isPlaying = true;
+    }, 600);
+}
+
+function saveScore(scoreValue, completed) {
+    const scoreEntry = {
+        score: scoreValue,
+        date: new Date().toISOString(),
+        completed: completed
+    };
+    
+    previousScores.unshift(scoreEntry);
+    
+    if (previousScores.length > 10) {
+        previousScores = previousScores.slice(0, 10);
+    }
+    
+    localStorage.setItem('scores', JSON.stringify(previousScores));
+
+    updateScoreboardDisplay();
+}
+
+function updateScoreboardDisplay() {
+    scoreboardContainer.innerHTML = '';
+    
+    if (previousScores.length === 0) {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.classList.add('empty-scores');
+        emptyMessage.textContent = 'No games played yet';
+        scoreboardContainer.appendChild(emptyMessage);
+        return;
+    }
+    
+    previousScores.forEach(scoreEntry => {
+        const scoreItem = document.createElement('div');
+        scoreItem.classList.add('score-item');
+        
+        const scoreValue = document.createElement('span');
+        scoreValue.classList.add('score-value');
+        scoreValue.textContent = `${scoreEntry.score} points`;
+        
+        if (scoreEntry.completed) {
+            const completionIcon = document.createElement('i');
+            completionIcon.classList.add('fas', 'fa-check-circle');
+            completionIcon.style.color = 'green';
+            completionIcon.style.marginLeft = '5px';
+            scoreValue.appendChild(completionIcon);
+        }
+        
+        const scoreDate = document.createElement('span');
+        scoreDate.classList.add('score-date');
+        
+        // Format date in a shorter, more readable format
+        const date = new Date(scoreEntry.date);
+        const today = new Date();
+        
+        // If today, just show time
+        if (date.toDateString() === today.toDateString()) {
+            scoreDate.textContent = `Today, ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        } 
+        // If this year, show month and day
+        else if (date.getFullYear() === today.getFullYear()) {
+            scoreDate.textContent = date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+        } 
+        // Otherwise show full date
+        else {
+            scoreDate.textContent = date.toLocaleDateString([], {month: 'short', day: 'numeric', year: '2-digit'});
+        }
+        
+        scoreItem.appendChild(scoreValue);
+        scoreItem.appendChild(scoreDate);
+        scoreboardContainer.appendChild(scoreItem);
+    });
+}
+
+function showModal(title, message) {
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+    
+    if (!isPlaying) {
+        startGame();
+    }
+}
+
+// Initialize the game when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);

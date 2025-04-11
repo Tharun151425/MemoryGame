@@ -1,25 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Match Game</title>
     <link rel="stylesheet" href="GameStyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Color Memory Match Game</h1>
-    <div class="container">
-        <div id="gamecontainer">
-
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-puzzle-piece"></i>
+            <h2>Memory Match</h2>
         </div>
-        <div class="menu">
-            <p id="high"  class="display">Highest Score : 0</p>
-            <p id="score" class="display">Score : 0</p>
-            <p id="timer" class="display">Time Left : 60</p>
-            <button id="start" onclick="startGame()">Start/Restart</button>
-            <button id="exit" onclick="Exit()">Exit</button>
+        <div class="theme-toggle">
+            <button id="theme-switch" aria-label="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <div class="game-panel">
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-trophy"></i>
+                    <p id="high" class="display">High Score: 0</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <p id="score" class="display">Score: 0</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-clock"></i>
+                    <p id="timer" class="display">Time: 60s</p>
+                </div>
+            </div>
+            
+            <div id="gamecontainer" class="game-grid"></div>
+            
+            <div class="controls">
+                <button id="start" class="btn primary">
+                    <i class="fas fa-play"></i> Start Game
+                </button>
+                <button id="exit" class="btn secondary">
+                    <i class="fas fa-times"></i> Exit Game
+                </button>
+            </div>
+        </div>
+        
+        <div class="scoreboard-section">
+            <div class="scoreboard-header">
+                <h2>Past Games</h2>
+                <button id="clear-scores" class="btn secondary small">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+            <div id="scoreboard" class="scoreboard">
+                <p class="empty-scores">No games played yet</p>
+            </div>
+        </div>
+    </main>
+    
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Game Over!</h2>
+            <p id="modal-message">Your score: 0</p>
+            <div class="modal-buttons">
+                <button id="modal-close" class="btn primary">
+                    <i class="fas fa-redo"></i> Play Again
+                </button>
+                <button id="modal-exit" class="btn secondary">
+                    <i class="fas fa-door-open"></i> Back to Menu
+                </button>
+            </div>
         </div>
     </div>
+    
+    <footer>
+        <p class="footer-text">Made by Tharun Krishna</p>
+        <div class="footer-links">
+            <a href="mailto:tharun151425@gmail.com" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/tharunkrishna-m/" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Tharun151425" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+        <p class="footer-text">&copy; 2025 Memory Match Game</p>
+    </footer>   
+    
     <script src="GameScript.js"></script>
 </body>
 </html>
