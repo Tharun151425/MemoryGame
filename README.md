@@ -2,22 +2,32 @@
 
 A responsive memory card matching game with light/dark theme support and score tracking. Test your memory by matching pairs of colored cards before time runs out!
 
+---
+
 ## Features
 
 - 🎮 Classic memory matching gameplay
 - 🌓 Light and dark theme support
 - 📱 Fully responsive design that works on all devices
-- 🏆 Score tracking and high score persistence
-- 📊 Game history scoreboard
-- ⏱️ Timed gameplay with countdown
-- 🎯 Multiple game modes
 - 💾 LocalStorage for saving game data
+- 📊 Game history scoreboard and Timeout⏰
+
+---
+
+## 🛠️ Built With
+
+- **HTML5** – Semantic structure  
+- **CSS3** – Theming with CSS variables, animations  
+- **JavaScript (ES6+)** – Game logic and interactivity  
+- **LocalStorage API** – Score & history tracking  
+- **Font Awesome** – Iconography  
+
+---
 
 ## Screenshots
 
-<!-- Add your screenshots here -->
-![Light Theme Screenshot](screenshots/light-theme.png)
 ![Dark Theme Screenshot](screenshots/dark-theme.png)
+![Light Theme Screenshot](screenshots/light-theme.png)
 ![Game in Progress](screenshots/gameplay.png)
 ![Game Complete](screenshots/game-complete.png)
 ![Mobile View](screenshots/mobile-view.png)
@@ -60,11 +70,29 @@ You can customize the game by modifying the following:
 - `COLORS` array in `script.js` to change the card colors
 - CSS variables in `styles.css` to modify the theme colors
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🙌 Contributing
 
-## Acknowledgments
+We welcome contributions! Whether it’s fixing bugs, improving UI, or adding a cool new game mode, you’re welcome to join in!
 
-- Font Awesome for the icons
-- Inspiration from classic memory games
+### 💡 Ways You Can Contribute:
+- Fix typos or improve the layout
+- Suggest UI/UX enhancements
+- Add more game modes or animations
+- Optimize the JS logic or add accessibility features
+
+Just fork the repo, make your changes, and open a pull request. Let’s make this better together! 💪
+
+---
+
+## 📬 Contact
+
+<p align="center">
+  <a href="mailto:tharun151425@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
+  <a href="https://www.linkedin.com/in/tharunkrishna-m/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+  <a href="https://github.com/Tharun151425"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+</p>
+
+> Built by **Tharunkrishna M** — Keep matching, keep winning!
+---
